@@ -1,4 +1,14 @@
 #include "systemcalls.h"
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h> // Include this header for system(), execv(), and other standard library functions
+#include <unistd.h> // Include this header for fork(), execv(), and other system calls
+#include <fcntl.h> // Include this header for open()
+#include <stdarg.h> // Include this header for variadic functions
+#include <stdbool.h> // Include this header for the bool type
+#include <sys/types.h> // Include this header for pid_t type
+#include <sys/wait.h> // Include this header for waitpid()
+
 
 /**
  * @param cmd the command to execute with system()
@@ -16,6 +26,13 @@ bool do_system(const char *cmd)
  *   and return a boolean true if the system() call completed with success
  *   or false() if it returned a failure
 */
+int err = 0 ;
+err=system(cmd);
+
+	if(err != 0)
+	{
+		return false ;
+	}
 
     return true;
 }
@@ -38,6 +55,7 @@ bool do_exec(int count, ...)
 {
     va_list args;
     va_start(args, count);
+    pid_t pid; 
     char * command[count+1];
     int i;
     for(i=0; i<count; i++)
@@ -58,7 +76,26 @@ bool do_exec(int count, ...)
  *   as second argument to the execv() command.
  *
 */
+   if (command[0][0] != '/') {
+        return false;
+    }
+ 	pid = fork() ;
+ 	 if (pid == -1) {
+ 	 return false ;
+ 	 }
+ 	 else if (pid == 0) {
+        // Child process
+        execv(command[0], command);
 
+        // If execv returns, an error occurred
+     return false ;
+    } else {
+        // Parent process
+        int status;
+        if (waitpid(pid, &status, 0) == -1) {
+            return false;
+        }
+        }	
     va_end(args);
 
     return true;
@@ -92,7 +129,44 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
  *   The rest of the behaviour is same as do_exec()
  *
 */
+ 
+ 
+    pid_t pid = fork();
+    if (pid == -1) {
+        // Fork failed
+        return false;
+    } else if (pid == 0) {
+        // Child process
 
+        // Open the file for writing
+        int fd = open(outputfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if (fd == -1) {
+             return false;
+        }
+
+        // Redirect standard output to the file
+        if (dup2(fd, STDOUT_FILENO) == -1) {
+            close(fd);
+            return false;
+        }
+
+        // Close the file descriptor as it's no longer needed after dup2
+        close(fd);
+
+ if (command[0][0] != '/') {
+        return false;
+    }
+        // Execute the command
+        execv(command[0], command);
+
+        // If execv returns, an error occurred
+       return false;
+    } else {
+        // Parent process
+        int status;
+        waitpid(pid, &status, 0);
+        return WIFEXITED(status) && WEXITSTATUS(status) == 0;
+}
     va_end(args);
 
     return true;
