@@ -115,6 +115,7 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
     va_start(args, count);
     char * command[count+1];
     int i;
+int status;
     for(i=0; i<count; i++)
     {
         command[i] = va_arg(args, char *);
@@ -166,7 +167,7 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
        return false;
     } else {
         // Parent process
-        int status;
+   
         waitpid(pid, &status, 0);
         return WIFEXITED(status) && WEXITSTATUS(status) == 0;
 }
