@@ -76,30 +76,33 @@ bool do_exec(int count, ...)
  *   as second argument to the execv() command.
  *
 */
-   if (command[0][0] != '/') {
-        return false;
+  pid = fork();
+  if (pid < 0) {
+    perror("fork");
+
+    return false;
+  }
+
+  if (pid == 0) {
+    // Child process: replace current process with the command
+    if (execv(command[0], command) == -1) {
+      perror("execv");
+      _exit(EXIT_FAILURE);  // Use _exit to avoid potential issues with atexit handlers
     }
- 	pid = fork() ;
- 	 if (pid == -1) {
- 	 return false ;
- 	 }
- 	 else if (pid == 0) {
-        // Child process
-        execv(command[0], command);
-
-        // If execv returns, an error occurred
-     return false ;
-    } else {
-        // Parent process
-        int status;
-        if (waitpid(pid, &status, 0) == -1) {
-            return false;
-        }
-        }	
-    va_end(args);
-
-    return true;
+  } else {
+    // Parent process: wait for child to finish execution
+ 
+    if (waitpid(pid, &status, 0) == -1) {
+      return false;
 }
+   }
+
+    // Check child process exit status
+    if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+      return false;
+    }
+      return true;
+  }
 
 /**
 * @param outputfile - The full path to the file to write with command output.
