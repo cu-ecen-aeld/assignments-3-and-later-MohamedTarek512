@@ -58,6 +58,7 @@ bool do_exec(int count, ...)
     pid_t pid; 
     char * command[count+1];
     int i;
+	int status;
     for(i=0; i<count; i++)
     {
         command[i] = va_arg(args, char *);
