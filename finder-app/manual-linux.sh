@@ -12,6 +12,7 @@ BUSYBOX_VERSION=1_33_1
 FINDER_APP_DIR=$(realpath $(dirname $0))
 ARCH=arm64
 CROSS_COMPILE=aarch64-none-linux-gnu-
+AUTOGRADER_DIR=/tmp/aesd-autograder
 
 mkdir -p ${AUTOGRADER_DIR}
 export PATH=$PATH:/home/mohamed/tools/gcc-arm-10.3-2021.07-x86_64-aarch64-none-linux-gnu/bin
