@@ -12,6 +12,8 @@ BUSYBOX_VERSION=1_33_1
 FINDER_APP_DIR=$(realpath $(dirname $0))
 ARCH=arm64
 CROSS_COMPILE=aarch64-none-linux-gnu-
+
+mkdir -p ${AUTOGRADER_DIR}
 export PATH=$PATH:/home/mohamed/tools/gcc-arm-10.3-2021.07-x86_64-aarch64-none-linux-gnu/bin
 if [ $# -lt 1 ]
 then
@@ -45,6 +47,7 @@ if [ ! -e ${OUTDIR}/linux-stable/arch/${ARCH}/boot/Image ]; then
     make defconfig
     make -j4
 fi
+cp ${OUTDIR}/linux-stable/arch/${ARCH}/boot/bzImage ${AUTOGRADER_DIR}/Image
 echo "Creating the staging directory for the root filesystem"
 cd "$OUTDIR"
 if [ -d "${OUTDIR}/rootfs" ]
