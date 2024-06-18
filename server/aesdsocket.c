@@ -39,8 +39,9 @@ void setup_signal_handler() {
 }
 
 int main(int argc, char *argv[]) {
+       printf("Hello from main");
 /*    openlog("aesdsocket", LOG_PID, LOG_USER);
-    printf("Hello from main");
+ 
     struct addrinfo hints, *res;
     struct sockaddr_storage client_addr;
     socklen_t addr_size;
