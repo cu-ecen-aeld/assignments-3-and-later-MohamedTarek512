@@ -1,4 +1,4 @@
-CC = aarch64-linux-gnu-gcc
+CC = gcc
 CFLAGS = -Wall -Werror
 TARGET = aesdsocket
 SRCS = aesdsocket.c
