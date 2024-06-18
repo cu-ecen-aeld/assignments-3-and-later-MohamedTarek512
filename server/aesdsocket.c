@@ -39,7 +39,7 @@ void setup_signal_handler() {
 }
 
 int main(int argc, char *argv[]) {
-    openlog("aesdsocket", LOG_PID, LOG_USER);
+/*    openlog("aesdsocket", LOG_PID, LOG_USER);
     printf("Hello from main");
     struct addrinfo hints, *res;
     struct sockaddr_storage client_addr;
@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
         syslog(LOG_INFO, "Closed connection from %s", client_ip);
     }
 
-    closelog();
+    closelog(); */
     return 0;
 }
 
