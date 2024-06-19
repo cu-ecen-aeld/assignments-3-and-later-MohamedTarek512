@@ -6,7 +6,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <syslog.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
@@ -20,9 +19,9 @@ int server_socket, client_socket;
 int running = 1;
 
 void handle_signal(int signal) {
-    syslog(LOG_INFO, "Caught signal, exiting");
+    //syslog(LOG_INFO, "Caught signal, exiting");
     running = 0;
-    close(server_socket);
+    close(server_socket)
     close(client_socket);
     remove(FILE_PATH);
     exit(0);
@@ -39,9 +38,8 @@ void setup_signal_handler() {
 }
 
 int main(int argc, char *argv[]) {
-       printf("Hello from main");
-/*    openlog("aesdsocket", LOG_PID, LOG_USER);
- 
+  //  openlog("aesdsocket", LOG_PID, LOG_USER);
+    
     struct addrinfo hints, *res;
     struct sockaddr_storage client_addr;
     socklen_t addr_size;
@@ -60,12 +58,12 @@ int main(int argc, char *argv[]) {
 
     server_socket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
     if (server_socket == -1) {
-        syslog(LOG_ERR, "Socket creation failed");
+        //syslog(LOG_ERR, "Socket creation failed");
         exit(1);
     }
 
     if (bind(server_socket, res->ai_addr, res->ai_addrlen) == -1) {
-        syslog(LOG_ERR, "Bind failed");
+       // syslog(LOG_ERR, "Bind failed");
         close(server_socket);
         exit(1);
     }
@@ -73,7 +71,7 @@ int main(int argc, char *argv[]) {
     freeaddrinfo(res);
 
     if (listen(server_socket, BACKLOG) == -1) {
-        syslog(LOG_ERR, "Listen failed");
+        //syslog(LOG_ERR, "Listen failed");
         close(server_socket);
         exit(1);
     }
@@ -83,16 +81,16 @@ int main(int argc, char *argv[]) {
         client_socket = accept(server_socket, (struct sockaddr *)&client_addr, &addr_size);
         if (client_socket == -1) {
             if (!running) break;
-            syslog(LOG_ERR, "Accept failed");
+           // syslog(LOG_ERR, "Accept failed");
             continue;
         }
 
         inet_ntop(client_addr.ss_family, &((struct sockaddr_in *)&client_addr)->sin_addr, client_ip, sizeof client_ip);
-        syslog(LOG_INFO, "Accepted connection from %s", client_ip);
+        //syslog(LOG_INFO, "Accepted connection from %s", client_ip);
 
         file_fd = open(FILE_PATH, O_CREAT | O_APPEND | O_RDWR, 0644);
         if (file_fd == -1) {
-            syslog(LOG_ERR, "File open failed");
+            //syslog(LOG_ERR, "File open failed");
             close(client_socket);
             continue;
         }
@@ -111,10 +109,9 @@ int main(int argc, char *argv[]) {
 
         close(file_fd);
         close(client_socket);
-        syslog(LOG_INFO, "Closed connection from %s", client_ip);
+        //syslog(LOG_INFO, "Closed connection from %s", client_ip);
     }
 
-    closelog(); */
+   // closelog(); 
     return 0;
 }
-
